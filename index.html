@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朝鮮民主主義人民共和國中央檔案系統</title>
+    <style>
+        body {
+            background-color: #e8ecef;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .header {
+            background-color: #b22222;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 4px solid #900;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+        .warning {
+            color: #b22222;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        /* 登錄頁樣式 */
+        #login-page {
+            display: block;
+            text-align: center;
+        }
+        #login-page input {
+            padding: 10px;
+            width: 60%;
+            margin: 10px 0;
+            font-size: 1em;
+            border: 1px solid #999;
+        }
+        #login-page button {
+            padding: 10px 20px;
+            background-color: #b22222;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #login-page button:hover {
+            background-color: #900;
+        }
+        #login-error {
+            color: #b22222;
+            font-size: 1em;
+            margin-top: 10px;
+            display: none;
+        }
+        /* 主界面樣式 */
+        #main-page {
+            display: none;
+        }
+        .nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1em;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-bar input {
+            padding: 8px;
+            width: 50%;
+            font-size: 1em;
+            border: 1px solid #999;
+        }
+        .search-bar button {
+            padding: 8px 15px;
+            background-color: #b22222;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .search-bar button:hover {
+            background-color: #900;
+        }
+        .archive-section {
+            margin: 30px 0;
+        }
+        .archive-section h2 {
+            color: #b22222;
+            font-size: 1.6em;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .archive-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .archive-item {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #b22222;
+            transition: background-color 0.3s;
+        }
+        .archive-item:hover {
+            background-color: #f0f0f0;
+        }
+        .archive-item a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .archive-item a:hover {
+            text-decoration: underline;
+        }
+        .archive-item p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 0.95em;
+        }
+        /* 詳情頁樣式 */
+        #details-page {
+            display: none;
+        }
+        .details {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #b22222;
+        }
+        .details p {
+            margin: 10px 0;
+            color: #444;
+            font-size: 1em;
+        }
+        .access-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #0066cc;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+        .access-button:hover {
+            background-color: #b22222;
+        }
+        .back-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>朝鮮民主主義人民共和國中央檔案系統<br>조선민주주의인민공화국 중앙 문서 시스템</h1>
+    </div>
+    <div class="container">
+        <div id="login-page">
+            <p class="warning">警告：僅限授權人員訪問！輸入密碼以進入系統<br>경고: 오직 권한이 있는 자만 접근 가능! 비밀번호를 입력하여 시스템에 접속하세요</p>
+            <input type="password" id="password" placeholder="輸入密碼 | 비밀번호 입력">
+            <br>
+            <button onclick="checkPassword()">登錄 | 로그인</button>
+            <p id="login-error">密碼錯誤，請重試！<br>비밀번호가 잘못되었습니다. 다시 시도하세요!</p>
+        </div>
+
+        <div id="main-page">
+            <div class="nav">
+                <a onclick="showMain()">首頁 | 홈</a>
+                <a href="#">檔案分類 | 문서 분류</a>
+                <a href="#">安全協議 | 보안 프로토콜</a>
+                <a href="#">聯繫管理員 | 관리자 연락</a>
+            </div>
+            <p class="warning">警告：本系統包含最高機密檔案，未經授權訪問將被視為叛國罪！<br>경고: 이 시스템은 최고 기밀 문서를 포함하며, 무단 접근은 반역죄로 간주됩니다!</p>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="搜索機密檔案 | 기밀 문서 검색">
+                <button>搜索 | 검색</button>
+            </div>
+            
+            <div class="archive-section">
+                <h2>戰略計劃類 | 전략 계획</h2>
+                <div class="archive-list">
+                    <div class="archive-item">
+                        <a onclick="showDetails(1)">金正恩同志2025年戰略計劃<br>김정은 동지 2025년 전략 계획</a>
+                        <p>最高領導對未來五年的經濟、軍事及外交規劃。<br>최고 지도자의 향후 5년 경제, 군사, 외교 계획.</p>
+                    </div>
+                    <div class="archive-item">
+                        <a onclick="showDetails(2)">2030年國家振興藍圖<br>2030년 국가 부흥 청사진</a>
+                        <p>全面振興朝鮮的長期戰略，包含基礎設施建設計劃。<br>조선 부흥을 위한 장기 전략, 인프라 건설 계획 포함.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="archive-section">
+                <h2>軍事檔案類 | 군사 문서</h2>
+                <div class="archive-list">
+                    <div class="archive-item">
+                        <a onclick="showDetails(3)">核武技術研發報告<br>핵무기 기술 연구 보고서</a>
+                        <p>核彈頭小型化及洲際彈道導彈試射最新進展。<br>핵탄두 소형화 및 대륙간 탄도 미사일 시험 최신 진전.</p>
+                    </div>
+                    <div class="archive-item">
+                        <a onclick="showDetails(4)">人民軍邊境部署計劃<br>인민군 국경 배치 계획</a>
+                        <p>邊境防禦及特殊部隊行動的詳細部署方案。<br>국경 방어 및 특수부대 작전의 상세 배치 방안.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="archive-section">
+                <h2>外交機密類 | 외교 기밀</h2>
+                <div class="archive-list">
+                    <div class="archive-item">
+                        <a onclick="showDetails(5)">秘密外交協定<br>비밀 외교 협정</a>
+                        <p>與多國的秘密合作協議，涉及經濟及軍事援助。<br>다수 국가와의 비밀 협력 협정, 경제 및 군사 지원 포함.</p>
+                    </div>
+                    <div class="archive-item">
+                        <a onclick="showDetails(6)">國際情報交換記錄<br>국제 정보 교환 기록</a>
+                        <p>朝鮮情報部門與外國機構的機密通訊記錄。<br>조선 정보 부서와 외국 기관의 기밀 통신 기록.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="details-page">
+            <p class="warning">警告：此為最高機密檔案，未經授權訪問將面臨嚴厲處罰！<br>경고: 이는 최고 기밀 문서이며, 무단 접근 시 엄중한 처벌을 받습니다!</p>
+            <div class="details">
+                <h2 id="archive-title">檔案載入中...<br>문서 로드 중...</h2>
+                <p id="archive-content">檔案內容載入中...<br>문서 내용 로드 중...</p>
+            </div>
+            <a href="https://www.bilibili.com/video/BV1GJ411x7h7/?share_source=copy_web&vd_source=af9fb8c6d420aff6f600f58f51115cfe" target="_blank" class="access-button">訪問完整檔案<br>전체 문서 접근</a>
+            <p><a onclick="showMain()" class="back-link">返回檔案庫 | 문서보관소로 돌아가기</a></p>
+        </div>
+        
+        <footer>朝鮮人民軍中央檔案管理部 | 조선인민군 중앙 문서관리부<br>版權所有 © 2025 | 저작권 소유 © 2025</footer>
+    </div>
+
+    <script>
+        const correctPassword = "GreatLeader2025";
+        const archives = {
+            1: {
+                title: "金正恩同志2025年戰略計劃<br>김정은 동지 2025년 전략 계획",
+                content: "此文件詳細記載了金正恩同志對2025-2030年國家發展的戰略規劃，涵蓋經濟振興、軍事現代化及國際影響力提升的具體措施。檔案包含最高領導的親筆批示，並附有詳細的實施時間表及預算分配方案。僅限最高層級人員查閱，嚴禁任何形式複製或傳播！<br>이 문서는 김정은 동지가 2025-2030년 국가 발전을 위한 전략 계획을 상세히 기록하며, 경제 진흥, 군사 현대화, 국제 영향력 증대를 위한 구체적인 조치를 포함합니다. 최고 지도자의 친필 지시와 상세한 실행 일정 및 예산 할당 방안을 포함합니다. 최고위층만 열람 가능하며, 어떠한 형태의 복제나 전파도 엄금입니다!"
+            },
+            2: {
+                title: "2030年國家振興藍圖<br>2030년 국가 부흥 청사진",
+                content: "本檔案為朝鮮2030年國家振興的長期藍圖，包含基礎設施建設、能源自給計劃及農業現代化方案。文件詳細列出各項工程的優先級及資金來源，部分內容涉及與友好國家的合作項目。未經許可不得洩漏！<br>이 문서는 조선의 2030년 국가 부흥을 위한 장기 청사진으로, 인프라 건설, 에너지 자급 계획, 농업 현대화 방안을 포함합니다. 각 프로젝트의 우선순위와 자금 출처를 상세히 나열하며, 일부 내용은 우호 국가와의 협력 프로젝트를 다룹니다. 허가 없이 유출 금지!"
+            },
+            3: {
+                title: "核武技術研發報告<br>핵무기 기술 연구 보고서",
+                content: "本報告詳細介紹了朝鮮核武計劃的最新進展，包括洲際彈道導彈的試射數據、核彈頭小型化技術及新式發射平台的部署計劃。檔案附有試驗場照片及技術圖表，僅供內部高層參考，任何洩漏將引發嚴重後果！<br>이 보고서는 조선 핵무기 계획의 최신 진전을 상세히 소개하며, 대륙간 탄도 미사일 시험 데이터, 핵탄두 소형화 기술, 신형 발사 플랫폼 배치 계획을 포함합니다. 시험장 사진 및 기술 도표가 첨부되어 있으며, 내부 고위층만 참고 가능하며, 유출 시 심각한 결과를 초래합니다!"
+            },
+            4: {
+                title: "人民軍邊境部署計劃<br>인민군 국경 배치 계획",
+                content: "本文件概述了朝鮮人民軍在邊境地區的最新部署計劃，包括特殊部隊行動方案、防禦工事建設及應對外部威脅的應急措施。檔案包含詳細的地圖和作戰指令，嚴禁外傳！<br>이 문서는 조선인민군의 국경 지역 최신 배치 계획을 개요하며, 특수부대 작전 방안, 방어 공사 건설, 외부 위협 대응 비상 조치를 포함합니다. 상세한 지도와 작전 지침을 포함하며, 외부 유출 엄금!"
+            },
+            5: {
+                title: "秘密外交協定<br>비밀 외교 협정",
+                content: "此檔案記錄了朝鮮與多個國家的秘密外交協定，包含經濟援助、軍事技術交換及戰略合作細節。文件列出各國代表簽署的協議副本及會談記錄，任何洩漏將引發國際危機！<br>이 문서는 조선과 여러 국가 간의 비밀 외교 협정을 기록하며, 경제 지원, 군사 기술 교환, 전략 협력 세부 사항을 포함합니다. 각국 대표가 서명한 협정 사본 및 회담 기록을 나열하며, 유출 시 국제 위기를 초래할 수 있습니다!"
+            },
+            6: {
+                title: "國際情報交換記錄<br>국제 정보 교환 기록",
+                content: "本檔案包含朝鮮情報部門與外國機構的機密通訊記錄，涉及國際局勢分析、間諜活動報告及情報共享協議。內容高度敏感，僅限指定人員查閱！<br>이 문서는 조선 정보 부서와 외국 기관의 기밀 통신 기록을 포함하며, 국제 정세 분석, 첩보 활동 보고서, 정보 공유 협정을 다룹니다. 내용은 매우 민감하며, 지정된 인원만 열람 가능합니다!"
+            }
+        };
+
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            if (password === correctPassword) {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-page').style.display = 'block';
+                document.getElementById('details-page').style.display = 'none';
+                document.getElementById('login-error').style.display = 'none';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function showMain() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'block';
+            document.getElementById('details-page').style.display = 'none';
+        }
+
+        function showDetails(id) {
+            const archive = archives[id] || archives[1];
+            document.getElementById('archive-title').innerHTML = archive.title;
+            document.getElementById('archive-content').innerHTML = archive.content;
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('details-page').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
