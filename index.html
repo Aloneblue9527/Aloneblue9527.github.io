@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>资本做局</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    .bg-image {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 1rem 0;
+    }
+    input, button {
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      border-radius: 0.5rem;
+      border: none;
+      width: 80%;
+      max-width: 300px;
+    }
+    button {
+      background: #ff4444;
+      color: white;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #cc0000;
+    }
+    .progress-bar {
+      width: 80%;
+      max-width: 300px;
+      height: 10px;
+      background: #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .progress {
+      height: 100%;
+      background: #ff4444;
+      width: 0;
+      transition: width 0.5s linear;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="bg-black">
+  <div id="bg" class="bg-image" style="background-image: url('images/bg0.jpg');"></div>
+  <div id="disclaimer" class="container">
+    <h1 class="text-2xl font-bold mb-4">免责声明</h1>
+    <p class="mb-4">本协议的订立、履行、解释及争议的解决均适用中华人民共和国法律并排除其他一切冲突法的适用。</p>
+    <button onclick="agreeDisclaimer()">同意</button>
+  </div>
+  <div id="main" class="container hidden">
+    <h1 class="text-2xl font-bold mb-4">资本做局</h1>
+    <p class="mb-4">请输入目标姓名</p>
+    <input id="nameInput" type="text" placeholder="姓名" class="text-black">
+    <button onclick="startSearch()">开始做局</button>
+  </div>
+  <div id="search" class="container hidden">
+    <h1 class="text-2xl font-bold mb-4">正在查找信息...</h1>
+    <p id="searchMessage" class="mb-4"></p>
+    <div class="progress-bar"><div class="progress" id="searchProgress"></div></div>
+    <p>总耗时: <span id="searchTimer">0</span> 秒</p>
+  </div>
+  <div id="result" class="container hidden">
+    <h1 class="text-2xl font-bold mb-4">目标信息</h1>
+    <img id="avatar" src="images/tx0.jpg" class="avatar">
+    <p id="nameDisplay" class="mb-4"></p>
+    <button onclick="startPrank()">执行做局</button>
+  </div>
+  <div id="prank" class="container hidden">
+    <h1 class="text-2xl font-bold mb-4">正在做局...</h1>
+    <p id="prankMessage" class="mb-4"></p>
+    <div class="progress-bar"><div class="progress" id="prankProgress"></div></div>
+    <p>已耗时: <span id="timer">0</span> 秒</p>
+  </div>
+  <div id="success" class="container hidden">
+    <h1 class="text-2xl font-bold mb-4">做局成功！</h1>
+    <p class="mb-4">目标已被资本掌控！</p>
+    <button onclick="viewDetails()">查看详情</button>
+  </div>
+  <script>
+    const friends = {
+      '谢俊宇': 'images/xjy.jpg',
+      '陶培然': 'images/tpr.jpg',
+      '于溪远': 'images/yxy.jpg',
+      '徐子浩': 'images/xzh.jpg',
+      '张航瑞': 'images/zhr.jpg',
+      '车方睿': 'images/cfr.jpg',
+      '董昊林': 'images/dhl.jpg',
+      '宫诚': 'images/gc.jpg',
+      '胡乃榕': 'images/hnr.jpg',
+      '李嘉铖': 'images/ljc.jpg',
+      '刘天硕': 'images/lts.jpg',
+      '刘泽琦': 'images/lzq.jpg',
+      '李子睿': 'images/lzr.jpg',
+      '于航': 'images/yh.jpg',
+      '田文泽': 'images/twz.jpg'
+    };
+    const searchMessages = [
+      '正在检索目标信息...',
+      '正在分析目标背景...'
+    ];
+    const prankMessages = [
+      '正在进行资产证券化...',
+      '正在优化股权结构...',
+      '正在启动尽职调查...',
+      '正在布局战略投资人...',
+      '正在锁定核心资产...',
+      '正在评估市场风险敞口...',
+      '正在构建产业生态闭环...',
+      '正在引导估值体系重塑...',
+      '正在整合上下游资源...',
+      '正在设计对赌协议...',
+      '正在触发一致行动人条款...',
+      '正在研究并购重组方案...'
+    ];
+    const backgrounds = ['images/bg2.jpg', 'images/bg3.jpg', 'images/bg4.jpg', 'images/bg5.jpg', 'images/bg6.jpg', 'images/bg7.jpg'];
+
+    function agreeDisclaimer() {
+      console.log('Agree button clicked');
+      try {
+        const disclaimer = document.getElementById('disclaimer');
+        const main = document.getElementById('main');
+        if (disclaimer && main) {
+          disclaimer.classList.add('hidden');
+          main.classList.remove('hidden');
+          console.log('Switched to main page');
+        } else {
+          console.error('Element not found: disclaimer or main');
+        }
+      } catch (error) {
+        console.error('Error in agreeDisclaimer:', error);
+        alert('跳转失败，请刷新页面重试！');
+      }
+    }
+
+    function startSearch() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) {
+        alert('请输入姓名！');
+        return;
+      }
+      document.getElementById('main').classList.add('hidden');
+      document.getElementById('search').classList.remove('hidden');
+      document.getElementById('bg').style.backgroundImage = "url('images/bg1.jpg')";
+      
+      let progress = 0;
+      let time = 0;
+      let messageIndex = 0;
+      document.getElementById('searchMessage').textContent = searchMessages[0];
+      
+      const searchInterval = setInterval(() => {
+        time += 100;
+        progress = (time / 5000) * 100;
+        document.getElementById('searchProgress').style.width = `${progress}%`;
+        document.getElementById('searchTimer').textContent = (time / 1000).toFixed(1);
+        
+        if (time % 2500 === 0) {
+          messageIndex = (messageIndex + 1) % searchMessages.length;
+          document.getElementById('searchMessage').textContent = searchMessages[messageIndex];
+        }
+        
+        if (time >= 5000) {
+          clearInterval(searchInterval);
+          document.getElementById('search').classList.add('hidden');
+          document.getElementById('result').classList.remove('hidden');
+          document.getElementById('nameDisplay').textContent = `目标：${name}`;
+          document.getElementById('avatar').src = friends[name] || 'images/tx0.jpg';
+          document.getElementById('bg').style.backgroundImage = "url('images/bg0.jpg')";
+        }
+      }, 100);
+    }
+
+    function startPrank() {
+      document.getElementById('result').classList.add('hidden');
+      document.getElementById('prank').classList.remove('hidden');
+      
+      let progress = 0;
+      let time = 0;
+      let bgIndex = 0;
+      let messageIndex = 0;
+      const totalTime = 30000; // 30 seconds
+      const bgSwitchTime = 5000; // 5 seconds per background
+      document.getElementById('prankMessage').textContent = prankMessages[0];
+      
+      const prankInterval = setInterval(() => {
+        time += 100;
+        progress = (time / totalTime) * 100;
+        document.getElementById('prankProgress').style.width = `${progress}%`;
+        document.getElementById('timer').textContent = (time / 1000).toFixed(1);
+        
+        // Update background
+        if (time % bgSwitchTime === 0) {
+          document.getElementById('bg').style.backgroundImage = `url('${backgrounds[bgIndex % backgrounds.length]}')`;
+          bgIndex++;
+        }
+        
+        // Update prank message
+        if (time % 2500 === 0) {
+          messageIndex = (messageIndex + 1) % prankMessages.length;
+          document.getElementById('prankMessage').textContent = prankMessages[messageIndex];
+        }
+        
+        if (time >= totalTime) {
+          clearInterval(prankInterval);
+          document.getElementById('prank').classList.add('hidden');
+          document.getElementById('success').classList.remove('hidden');
+          document.getElementById('bg').style.backgroundImage = "url('images/bg0.jpg')";
+        }
+      }, 100);
+    }
+
+    function viewDetails() {
+      window.location.href = 'https://www.bilibili.com/video/BV1GJ411x7h7/?vd_source=5b740b720da6dbb2fd4659c5d258b508';
+    }
+  </script>
+</body>
+</html>
