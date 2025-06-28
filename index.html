@@ -23,6 +23,7 @@
       width: 100%;
       height: 100%;
       z-index: -1;
+      transition: background-image 0.3s ease-in-out;
     }
     .container {
       display: flex;
@@ -83,7 +84,7 @@
   <div id="bg" class="bg-image" style="background-image: url('images/bg0.jpg');"></div>
   <div id="disclaimer" class="container">
     <h1 class="text-2xl font-bold mb-4">免责声明</h1>
-    <p class="mb-4">本协议的订立、履行、解释及争议的解决均适用中华人民共和国法律并排除其他一切冲突法的适用。</p>
+    <p class="mb-4">本网站仅为娱乐用途，输入姓名后将生成虚拟“做局”动画，无任何真实含义。点击“同意”继续。</p>
     <button onclick="agreeDisclaimer()">同意</button>
   </div>
   <div id="main" class="container hidden">
@@ -152,6 +153,27 @@
       '正在研究并购重组方案...'
     ];
     const backgrounds = ['images/bg2.jpg', 'images/bg3.jpg', 'images/bg4.jpg', 'images/bg5.jpg', 'images/bg6.jpg', 'images/bg7.jpg'];
+
+    // Preload images to prevent flickering
+    function preloadImages() {
+      const images = [
+        'images/bg0.jpg',
+        'images/bg1.jpg',
+        ...backgrounds,
+        'images/tx0.jpg',
+        ...Object.values(friends)
+      ];
+      images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+      console.log('Images preloaded:', images);
+    }
+
+    // Run preload on page load
+    window.onload = () => {
+      preloadImages();
+    };
 
     function agreeDisclaimer() {
       console.log('Agree button clicked');
